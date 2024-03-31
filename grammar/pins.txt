@@ -1,0 +1,30 @@
+expr -> expr2 expr1_ .
+expr1_ -> expr | .
+expr1_ -> | expr2 expr1_ .
+
+expr2 -> expr3 expr2_ .
+expr2_ -> expr2 | .
+
+expr3 -> expr4 expr3_ .
+expr3_ -> expr3 | .
+
+expr4 -> expr5 expr4_ .
+expr4_ -> expr4 | .
+expr4_ -> '+' expr5 expr4_ .
+expr4_ -> '-' expr5 expr4_ .
+
+expr5 -> expr6 expr5_ .
+expr5_ -> expr5 | .
+expr5_ -> '*' expr6 expr5_ .
+expr5_ -> '/' expr6 expr5_ .
+
+expr6 -> expr6_ expr7 .
+expr6_ -> expr6 | .
+expr6_ -> '+' expr6_ .
+expr6_ -> '-' expr6_ .
+
+
+expr7 -> EXPR expr7_ .
+expr7_ -> expr7 | .
+expr7_ -> '[' expr ']' expr7_ .
+

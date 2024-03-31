@@ -1,0 +1,9 @@
+
+- dodaj se prefix...
+CURRENT:
+E -> T E_ .
+E_ -> '+' T E_ | '-' T E_ | .
+T -> F T_ .
+T_ -> '*' F T_ | '/' F T_ | .
+F -> '(' E ')' | int .
+

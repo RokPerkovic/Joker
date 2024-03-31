@@ -1,0 +1,16 @@
+additive_expression -> multiplicative_expression additive_expression_ .
+additive_expression_ -> '+' additive_expression | '-' additive_expression | .
+
+
+multiplicative_expression -> prefix_expression multiplicative_expression_ .
+multiplicative_expression_ -> '*' multiplicative_expression | '/' multiplicative_expression | .
+
+
+prefix_expression -> '+' prefix_expression | '-' prefix_expression | atom_expression .
+
+
+
+
+atom_expression -> int_constant .
+atom_expression -> '(' expressions ')' .
+expressions -> expression expressions_ .

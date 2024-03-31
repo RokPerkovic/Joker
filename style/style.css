@@ -1,0 +1,44 @@
+#exprIn{
+	border-radius: 7px;
+	width:40%;
+	height: 40px;
+	font-size: 30px;
+}
+
+h1{
+	text-align: center;
+}
+
+p{
+	text-align: center;
+	margin-top: 10%;
+}
+
+div{
+	text-align: center;
+}
+
+#lexAn{
+	text-align: left;
+}
+
+.token_desc{
+	border: 1px solid black;
+	width: 25%;
+	margin-bottom:5px;
+}
+
+button{
+	/*background-color: #68fc6a;*/
+	border-radius: 7px;
+	height: 40px;
+	width: 15%;
+}
+
+#btnParse{
+	background-color: #68fc6a;
+}
+
+#btnClear{
+	background-color: #b5b2b1;
+}

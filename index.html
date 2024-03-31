@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Expression evaluator</title>
+	<link rel="stylesheet" href="./style/style.css">
+	<script src="./js/eval.js"></script>
+</head>
+<body>
+	<h1>Expression evaluator</h1>
+	<p>
+		<input type="text" id='exprIn' placeholder= '>'></input>	
+	</p>
+	<div>
+		<button type="button" id = 'btnParse' onclick="calculate()">Parse</button>
+		<button type="button" class = 'btnClear' onclick="clearExpr()">Clear</button>
+	</div>
+	
+	<h3>Lexical analysis:</h3>
+	<div id = 'lexAn'>
+		
+	</div>
+	<button type="button" class = 'btnClear' onclick="clearLexan()">Clear</button>
+	
+	
+	
+	<script>
+		//https://www.lewuathe.com/how-to-construct-grammar-of-arithmetic-operations.html
+		const lexAnOutput = document.getElementById('lexAn');
+		const input = document.getElementById('exprIn');
+
+		function calculate() {
+			//tokenize(); // lexan
+			//parse(); //synan
+			const t = new Tokenizer(input.value, input.value.length, 0);
+			const p = new Parser(t);
+			
+			let ast = p.parse();
+			console.log(ast);
+		}
+		
+		function tokenize(){
+			
+			input.removeAttribute("style");
+			
+			var token = {};
+			const t = new Tokenizer(input.value, input.value.length, 0);
+		
+			while(token.s_value != 'EOF'){
+				token = t.tokenizeInput();
+				
+				if(token.s_type === 'UNKNOWN_TOKEN'){
+					input.style.backgroundColor = "#f75c5c";
+				}
+				
+				var div = document.createElement('div');
+				div.innerHTML = 'value: ' + token.s_value + ', type: ' + token.s_type + ', from: ' + token.n_from + ', to: ' + token.n_to;
+				div.className = 'token_desc';
+				//document.body.appendChild(div);
+				lexAnOutput.appendChild(div);
+				
+				console.log(token);
+			}
+		}
+		
+		// klik na 1 gumb clear naj pocisti vse
+		function clearLexan(){
+			lexAnOutput.textContent = '';
+		}
+		
+		function clearExpr(){
+			input.value = '';
+			input.removeAttribute("style");
+		}
+	</script>
+	
+</body>
+</html>
