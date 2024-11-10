@@ -27,17 +27,12 @@ class SynAn {
 	}
 
 	/*
-		- dodaj se prefix...
-
 		Expr -> T E_ .
 		E_ -> '+' T E_ | '-' T E_ | .
-		T -> F T_ .
+		T -> '+' F T_ | '-' F T_ | F T_ .
 		T_ -> '*' F T_ | '/' F T_ | .
 		F -> '(' Expr ')' | int .
 	*/
-	//1 + 1 + (0))
-	
-	
 	
 	parse(){
 		this.#peek();
