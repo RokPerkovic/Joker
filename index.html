@@ -3,13 +3,13 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Expression evaluator</title>
-	<link rel="stylesheet" href="./style/style.css">
+	<!--<link rel="stylesheet" href="./style/style.css">-->
 	<script src="./js/LexAn.js"></script>
 	<script src="./js/SynAn.js"></script>
 </head>
 <body>
 	<script>
-		let expression = '+1';
+		let expression = '1';
 		let lexan = new LexAn(expression);
 		
 		/*let token = {}; //lexan.tokenizeInput();
@@ -20,17 +20,16 @@
 		}*/
 		
 		let synan = new SynAn(lexan);
-		//synan.parse();
-		//console.log(synan);
+
 		try {
-			synan.parse();
+			console.log(synan.parse());
 			console.log('Expression is valid.');
 		} catch (e) {
 			alert('Invalid expression! ' + e);
 		}
 		
 		//console.log(eval('1.1.1'));
-		
+		//console.log(exampleAST());
 	</script>
 	
 </body>
