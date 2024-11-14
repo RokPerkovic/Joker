@@ -1,3 +1,33 @@
+// Literal node (e.g., numbers)
+class Literal {
+  constructor(value) {
+    this.value = value;
+  }
+}
+
+// Binary operation node (e.g., +, -, *, /)
+class BinaryExpression {
+  constructor(operator, left, right) {
+    this.operator = operator;
+    this.left = left;
+    this.right = right;
+  }
+}
+
+// Unary operation node (e.g., -x)
+class UnaryExpression {
+  constructor(operator, operand) {
+    this.operator = operator;
+    this.operand = operand;
+  }
+}
+
+function exampleAST (){
+	// 1 + 1 + 2
+	return new BinaryExpression('+', '1', new BinaryExpression('+', '1', '2'));
+}
+
+
 class SynAn {
 	
 	#currToken;
@@ -31,39 +61,47 @@ class SynAn {
 		E_ -> '+' T E_ | '-' T E_ | .
 		T -> '+' F T_ | '-' F T_ | F T_ .
 		T_ -> '*' F T_ | '/' F T_ | .
-		F -> '(' Expr ')' | int .
+		F -> '(' Expr ')' | NUMBER .
 	*/
 	
 	parse(){
+		let binExpr;
 		this.#peek();
-		this.#parseExpr();
+		let root = this.#parseExpr();
 		this.#remove('EOF');
+		
+		return root; // AST root node
 	}
 
 	// Expr -> T E_ .
+	// Term, expression continuation
 	#parseExpr(){
 		//console.log('parse E');
+		
+		let left;
+		let operator;
+		let right;
 		switch(this.#currToken.type){
 			case "NUMBER":
 				//console.log('Expr -> T E_ .');
-				this.#parseT();
-				this.#parseE_();
-				break;
+				left = this.#parseT();
+				//console.log(left);
+				return this.#parseE_(left);
 			case "L_PAREN":
 				//console.log('Expr -> T E_ .');
-				this.#parseT();
-				this.#parseE_();
-				break;
+				left = this.#parseT();
+				//console.log(left);
+				return this.#parseE_(left);
 			case 'OP_ADD':
-				this.#remove("OP_ADD");
-				this.#parseT();
-				this.#parseE_();
-				break;
+				//this.#remove("OP_ADD");
+				left = this.#parseT();
+				
+				return this.#parseE_(left);
 			case 'OP_SUB':
-				this.#remove("OP_SUB");
-				this.#parseT();
-				this.#parseE_();
-				break;
+				//this.#remove("OP_SUB");
+				left = this.#parseT();
+				
+				return this.#parseE_(left);
 			case 'EOF': 
 				//console.log('eof: Expr -> .');
 				break;
@@ -71,55 +109,70 @@ class SynAn {
 				throw Error('Unexpected token ' + '"' +  this.#currToken.value + '" ' + ': ' + this.#currToken.type + " at: " + this.#currToken.posFrom);				
 				break;
 		}
+		
+		return left;
 	}
 
 	// T -> F T_ .
+	// Term
 	#parseT(){
 		//console.log('parse T');
-		// dodaj se ostalo... zaenkrat samo const
+		let operand;
+		let left;
+		let right;
+		let operator;
 		switch(this.#currToken.type){
 			case "L_PAREN": 
 				//console.log('T -> F T_ .');
-				this.#parseF();
-				this.#parseT_();
-				break;
+				left = this.#parseF();
+				
+				return this.#parseT_(left);
 			case "NUMBER":
 				//console.log('T -> F T_ .');
-				this.#parseF();
-				this.#parseT_();
-				break;
+				left = this.#parseF();
+				
+				return this.#parseT_(left);
 			case 'OP_ADD':
 				this.#remove("OP_ADD");
-				this.#parseF();
+				operand = this.#parseF();
 				this.#parseT_();
-				break;
+				
+				return new UnaryExpression("OP_ADD", operand);
 			case 'OP_SUB':
 				this.#remove("OP_SUB");
-				this.#parseF();
+				operand = this.#parseF();
 				this.#parseT_();
-				break;
+				
+				return new UnaryExpression("OP_SUB", operand);
 			default: 
 				throw Error('Unexpected token: ' + this.#currToken.type + " at: " + this.#currToken.posFrom); 
 				break;
 		}
 	}
-
+	// Expression continuation
 	// E_ -> '+' T E_ | '-' T E_ | .
-	#parseE_(){
+	// additive
+	#parseE_(left){
 		//console.log('parse E_');
+		let right;
+		let binExpr
 		switch(this.#currToken.type){
 			case "OP_ADD": 
 				//console.log('E_ -> + T E_');
+				//console.log("E_: OP_ADD");
 				this.#remove("OP_ADD");
-				this.#parseT();
-				this.#parseE_();
-				break;
+				right = this.#parseT();
+				//console.log("E_ right: ", right);
+				binExpr = new BinaryExpression("OP_ADD", left, right);
+				
+				return this.#parseE_(binExpr);
 			case "OP_SUB": 
 				//console.log('E_ -> - T E_');
 				this.#remove("OP_SUB");
-				this.#parseT();
-				this.#parseE_();
-				break;
+				right = this.#parseT();
+				binExpr = new BinaryExpression("OP_SUB", left, right);
+				
+				return this.#parseE_(binExpr);
 			case "R_PAREN": 
 				//console.log('E_ -> .');
 				break;
@@ -130,11 +183,20 @@ class SynAn {
 				throw Error('Unexpected token: ' + this.#currToken.type + " at: " + this.#currToken.posFrom); 
 				break;
 		}
+		
+		return left;
 	}
 
 	// T_ -> '*' F T_ | '/' F T_ | .
-	#parseT_(){
+	//multiplicative
+	// Term continuation
+	#parseT_(left){
 		//console.log('parse T_');
+		//let left;
+		let operator;
+		let right;
+		let binExpr;
+		
 		switch(this.#currToken.type){
 			case "OP_ADD": 
 				//console.log('T_ -> .');
@@ -145,15 +207,17 @@ class SynAn {
 			case "OP_MUL": 
 				//console.log('T_ -> * F T_');
 				this.#remove("OP_MUL");
-				this.#parseF();
-				this.#parseT_();
-				break;
+				right = this.#parseF();
+				binExpr = new BinaryExpression("OP_MUL", left, right);
+				
+				return this.#parseT_(binExpr);
 			case "OP_DIV": 
 				//console.log('T_ -> / F T_');
 				this.#remove("OP_DIV");
-				this.#parseF();
-				this.#parseT_();
-				break;
+				right = this.#parseF();
+				binExpr = new BinaryExpression("OP_DIV", left, right);
+				
+				return this.#parseT_(binExpr);
 			case 'R_PAREN': 
 				//console.log('T_ -> .'); 
 				break;
@@ -164,23 +228,30 @@ class SynAn {
 				throw Error('Unexpected token: ' + this.#currToken.type + " at: " + this.#currToken.posFrom); 
 				break;
 		}
+		
+		return left;
 	}
 
-	// F -> '(' E ')' | int .
+	// F -> '(' E ')' | NUMBER .
+	// primary
+	// Factor
 	#parseF(){
+		let literal;
+		let binExpr;
 		switch(this.#currToken.type){
 			case "L_PAREN": 
 				//console.log('F -> ( Expr )');
 				this.#remove("L_PAREN");
-				this.#parseExpr();
+				binExpr = this.#parseExpr();
 				this.#remove("R_PAREN");
-				//console.log('removed R_PAREN');
-				// this.#parseExpr();
-				break;
+
+				return binExpr;
 			case "NUMBER": 
 				//console.log('F -> int');
+				literal = this.#currToken;
 				this.#remove("NUMBER");
-				break;
+				
+				return new Literal(literal.value);
 			default: 
 				throw Error('Unexpected token: ' + this.#currToken.type + " at: " + this.#currToken.posFrom); 
 				break;
