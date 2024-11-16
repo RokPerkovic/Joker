@@ -23,14 +23,24 @@ class Evaluator {
 					return this.evaluate(expr.left) / this.evaluate(expr.right);
 			} 
 		} else if(expr instanceof UnaryExpression){
-			console.log("unary");
+			//console.log("unary");
 			operator = expr.operator;
 			switch(operator) {
 				case "OP_SUB":
-					console.log("OP_SUB", expr.operand);
-					return -1 * parseFloat(expr.operand.value);	
+					if (expr.operand instanceof Literal) {
+						return -1 * parseFloat(expr.operand.value);	
+					} else {
+						// evaluate expression
+						return -1 * this.evaluate(expr.operand);
+					}
+					
 				case "OP_ADD":
-					return parseFloat(expr.operand.value);	
+					if (expr.operand instanceof Literal) {
+						return parseFloat(expr.operand.value);	
+					} else {
+						// evaluate expression
+						return this.evaluate(expr.operand);
+					}	
 			}
 			
 		} else if (expr instanceof Literal) {
