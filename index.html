@@ -10,19 +10,14 @@
 </head>
 <body>
 	<script>
-		let expression = '1.99*3.2+(12-60)';
-		let lexan = new LexAn(expression);
+		let expression = '(1.1+2.2)*(-(3.3/4.4))';
+		let lexan;
+		let synan;
 		let ast;
 		let evaluator;
 		
-		/*let token = {}; //lexan.tokenizeInput();
-		
-		while (token.type != 'EOF') {
-			token = lexan.tokenizeInput();
-			console.log(token);
-		}*/
-		
-		let synan = new SynAn(lexan);
+		lexan = new LexAn(expression);
+		synan = new SynAn(lexan);
 
 		try {
 			ast = synan.parse();
@@ -35,8 +30,7 @@
 		evaluator = new Evaluator();
 		console.log(evaluator.evaluate(ast));
 		
-		//console.log(eval('1.1.1'));
-		//console.log(exampleAST());
+		//console.log(eval(expression));
 	</script>
 	
 </body>
