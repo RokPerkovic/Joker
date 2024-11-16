@@ -121,6 +121,7 @@ class SynAn {
 		let left;
 		let right;
 		let operator;
+		let unaryExpr;
 		switch(this.#currToken.type){
 			case "L_PAREN": 
 				//console.log('T -> F T_ .');
@@ -135,15 +136,15 @@ class SynAn {
 			case 'OP_ADD':
 				this.#remove("OP_ADD");
 				operand = this.#parseF();
-				this.#parseT_(); //TODO: handle T_
+				unaryExpr = new UnaryExpression("OP_ADD", operand);
 				
-				return new UnaryExpression("OP_ADD", operand);
+				return this.#parseT_(unaryExpr); //TODO: handle T_
 			case 'OP_SUB':
 				this.#remove("OP_SUB");
 				operand = this.#parseF();
-				this.#parseT_(); //TODO: handle T_
+				unaryExpr = new UnaryExpression("OP_SUB", operand);
 				
-				return new UnaryExpression("OP_SUB", operand);
+				return this.#parseT_(unaryExpr); //TODO: handle T_
 			default: 
 				throw Error('Unexpected token: ' + this.#currToken.type + " at: " + this.#currToken.posFrom); 
 				break;
