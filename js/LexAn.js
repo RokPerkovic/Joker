@@ -1,9 +1,3 @@
-/*
-	*class Token
-	*hrani trenutno pozicijo v input string-undefined
-	*kreira token-e razlicnih vrst (num, decNum, op, ...)
-*/
-
 class Token {
 	
 	//value;
