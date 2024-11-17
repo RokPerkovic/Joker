@@ -10,7 +10,7 @@
 </head>
 <body>
 	<script>
-		let expression = '(1.1+2.2)*(-(3.3/4.4))';
+		let expression = '1.99+2.79-(1.11+2_)';
 		let lexan;
 		let synan;
 		let ast;
@@ -26,7 +26,7 @@
 			alert('Invalid expression! ' + e);
 		}
 		
-		console.log(ast);
+		//console.log(ast);
 		evaluator = new Evaluator();
 		console.log(evaluator.evaluate(ast));
 		
