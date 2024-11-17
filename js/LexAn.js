@@ -29,13 +29,18 @@ class LexAn {
 	makeNumber(){
 		let posFrom = this.#inputPos + 1;
 		let posTo;
-		let value = ''
-		let type;
+		let value = '';
+		let number;
 		
 		while((this.#input[this.#inputPos] >= '0' && this.#input[this.#inputPos] <= '9') || (this.#input[this.#inputPos] === '.')){
 			
 			value+=this.#input[this.#inputPos];
 			this.#inputPos++;
+		}
+		
+		number = Number(value);
+		if (Number.isNaN(number)) {
+			throw Error("Invalid number token at: " + posFrom);	
 		}
 		
 		return new Token(value, 'NUMBER', posFrom, this.#inputPos);
